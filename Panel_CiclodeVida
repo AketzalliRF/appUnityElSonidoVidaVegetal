@@ -1,0 +1,20 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PanelCicloDeVida : MonoBehaviour {
+
+	// Inicialización
+	void Start () {
+		
+	}
+
+    // Actualización llamada cada framee
+    void Update () {
+		
+	}
+    public void clickButtonBack()
+    {
+        gameObject.SetActive(false);
+    }
+}
