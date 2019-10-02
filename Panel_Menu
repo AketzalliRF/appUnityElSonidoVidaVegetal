@@ -1,0 +1,72 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PanelMenu : MonoBehaviour {
+
+    [SerializeField] //Comandos
+    private GameObject panelIntroduccion;
+    [SerializeField]
+    private GameObject panelCicloDeVida;
+    [SerializeField]
+    private GameObject panelArabidopsisThaliana;
+    [SerializeField]
+    private GameObject panelLosGenes;
+    [SerializeField]
+    private GameObject panelEscuchar;
+    [SerializeField]
+    private GameObject panelSonificacion;
+    [SerializeField]
+    private GameObject panelInstrucciones;
+
+    public void clickButtonLosGenes () 
+    {
+        panelLosGenes.SetActive(true);
+        Debug.Log("LosGenes"); //Ventana a la que se dirige al hacer click
+    }
+
+    public void clickButtonCicloDeVida()
+    {
+        panelCicloDeVida.SetActive(true);
+        Debug.Log("CicloDeVida");
+    }
+
+    public void clickButtonArabidopsisThaliana()
+    {
+        panelArabidopsisThaliana.SetActive(true);
+        Debug.Log("ArabidopsisThaliana");
+    }
+
+    public void clickButtonIntroduccion()
+    {
+        panelIntroduccion.SetActive(true);
+        Debug.Log("Introduccion");
+    }
+
+    public void clickButtonEscuchar()
+    {
+        panelEscuchar.SetActive(true);
+
+        panelInstrucciones.SetActive(true);
+
+        StartCoroutine(DesactivarInstrucciones());
+
+        //gameObject.SetActive(false); regresarse
+        Debug.Log("Escuchar");
+    }
+
+    public void clickButtonSonificacion()
+    {
+        panelSonificacion.SetActive(true);
+
+        //gameObject.SetActive(false); regresarse
+        Debug.Log("sonificacion");
+    }
+
+
+    IEnumerator DesactivarInstrucciones()
+    {
+        yield return new WaitForSeconds(7);
+        panelInstrucciones.SetActive(false);
+    }
+}
