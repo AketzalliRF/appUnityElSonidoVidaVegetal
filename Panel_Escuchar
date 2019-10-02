@@ -1,0 +1,717 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class PanelEscuchar : MonoBehaviour
+{
+
+
+    Vector2[] vector2ArrayUbicaciones = new Vector2[28];
+
+    [SerializeField]
+    private RectTransform rectTransformFlecha;
+
+    [SerializeField]
+    private int delta;
+
+    [SerializeField]
+    private Text textLocation; 
+
+    [SerializeField]
+    private Text textDistance;
+
+    [SerializeField]
+    private Text textFlag;
+
+    [SerializeField]
+    private GameObject audios;
+
+    [SerializeField]
+    private GameObject graciasPorEscuchar;
+
+    //jardínes botanicos
+    private Vector2[] buap=new Vector2[4]; //Puebla
+    private Vector2[] uNACAR = new Vector2[4]; //Cd. del Carmen, Campeche
+    private Vector2[] drFaustinoMiranda = new Vector2[4]; //Tuxtla Gutierrez, Chiapas
+    private Vector2[] uAGro = new Vector2[4]; //Chilpancingo de los Bravo, Guerrero 
+    private Vector2[] jbVallarta = new Vector2[4]; //Cabo corrientes, Jalisco
+    private Vector2[] ibUNAM = new Vector2[4];//CDMX
+    private Vector2[] jbChapultepec = new Vector2[4]; //CDMX
+    private Vector2[] casaOlindo = new Vector2[4]; //Cuernavaca, Morelos
+    private Vector2[] etnobotanicoOaxaca = new Vector2[4]; //Oaxaca de Juarez, Oaxaca
+    private Vector2[] etnobotanicoFPelaez = new Vector2[4]; //Cholula, Puebla
+    private Vector2[] heliaBravo = new Vector2[4]; //Zapotitlán salinas, Puebla
+    private Vector2[] regionalCadereyta = new Vector2[4]; //Cadereyta de Montes, Queretaro
+    private Vector2[] drAlfredoBarrera = new Vector2[4]; //Puerto Morelos, Quintana Roo
+    private Vector2[] bFJohnston = new Vector2[4]; //Los Mochis, Sinaloa
+    private Vector2[] arquoBotanicoAnikabil = new Vector2[4]; //Merida, Yucatan
+    private Vector2[] acancehYxkaansajil = new Vector2[4]; //Acanceh, Yucatan
+    private Vector2[] tizatlan = new Vector2[4]; //Santa María Ixtulco, Tlaxcala
+    private Vector2[] uaTx = new Vector2[4]; //Tlaxcala de Xicohtencatl, Tlaxcala
+    private Vector2[] uaG = new Vector2[4]; //Zapopan, Jalisco
+    private Vector2[] reyNetzahualcoyotlUAA = new Vector2[4]; //Aguascalientes, Ags
+    private Vector2[] regiolanRogerOrellana = new Vector2[4]; //Merida, Yucatan 
+    private Vector2[] cosmovitral = new Vector2[4]; //Toluca, Estdo de México
+   
+
+    private Vector2[] elCharco = new Vector2[4]; //No hay área
+    private Vector2[] fJClavijero = new Vector2[4]; //No hay área
+
+
+    private Vector2[] ilamGardens = new Vector2[4];//Nueva Zelanda
+    
+    private Vector2[] casa = new Vector2[4];//Prueba
+
+    //http://alienryderflex.com/polygon/ //pagina donde está el algoritmo utilizado
+    float timer;
+
+    //MOVIMIENTO DE LA FLECHA POR TIEMPO
+    [SerializeField]
+    GameObject flecha;
+
+    private void OnEnable()
+    {
+        flecha.GetComponent<Animator>().enabled = false;
+        graciasPorEscuchar.SetActive(false);
+
+        timer = 0;
+
+        textFlag.text = "";
+
+        textDistance.text = "";
+
+        audios.GetComponents<AudioSource>()[0].volume = 1;
+        audios.GetComponents<AudioSource>()[1].volume = 1;
+        audios.GetComponents<AudioSource>()[2].volume = 1;
+        audios.GetComponents<AudioSource>()[3].volume = 1;
+        audios.GetComponents<AudioSource>()[4].volume = 1;
+        audios.GetComponents<AudioSource>()[5].volume = 1;
+        audios.GetComponents<AudioSource>()[6].volume = 1;
+        audios.GetComponents<AudioSource>()[7].volume = 1;
+    }
+
+    private void OnDisable()
+    {
+        audios.GetComponents<AudioSource>()[0].Stop();
+        audios.GetComponents<AudioSource>()[1].Stop();
+        audios.GetComponents<AudioSource>()[2].Stop();
+        audios.GetComponents<AudioSource>()[3].Stop();
+        audios.GetComponents<AudioSource>()[4].Stop();
+        audios.GetComponents<AudioSource>()[6].Stop();
+        audios.GetComponents<AudioSource>()[7].Stop();
+    }
+    //coordenadas del área de os jardines
+    private void Awake()
+    {
+        buap[0] = new Vector2(1900067, -9820084); //contamos 5 digitos despues del punto quitamos los digitos restantes y quitamos el punto
+        buap[1] = new Vector2(1900176, -9820006);
+        buap[2] = new Vector2(1900002, -9819462);
+        buap[3] = new Vector2(1899828, -9819553);
+
+        uNACAR[0]= new Vector2(1863735, -9178681);
+        uNACAR[1]= new Vector2(1863448, -9178435);
+        uNACAR[2]= new Vector2(1863567, -9177759);
+        uNACAR[3]= new Vector2(1863726, -9177852);
+
+        drFaustinoMiranda[0] = new Vector2(1675829, -9310943);
+        drFaustinoMiranda[1] = new Vector2(1675720, -9310717);
+        drFaustinoMiranda[2] = new Vector2(1675964, -9310610);
+        drFaustinoMiranda[3] = new Vector2(1675770, -9310602);
+
+        uAGro[0] = new Vector2(1753669, -9949450);
+        uAGro[1] = new Vector2(1753791, -9949633);
+        uAGro[2] = new Vector2(1753834, -9949431);
+        uAGro[3] = new Vector2(1753761, -9949320);
+
+        jbVallarta[0] = new Vector2(2046534, -10529341);
+        jbVallarta[1] = new Vector2(2046669, -10529276);
+        jbVallarta[2] = new Vector2(2046561, -10529185);
+        jbVallarta[3] = new Vector2(2046668, -10529268);
+
+        ibUNAM[0] = new Vector2(1931400, -9919964);
+        ibUNAM[1] = new Vector2(1931031, -9918710);
+        ibUNAM[2] = new Vector2(1932276, -9918975);
+        ibUNAM[3] = new Vector2(1932256, -9919467);
+
+        jbChapultepec[0] = new Vector2(1942157, -9918414);
+        jbChapultepec[1] = new Vector2(1942441, -9918472);
+        jbChapultepec[2] = new Vector2(1942377, -9918056);
+        jbChapultepec[3] = new Vector2(1942210, -9918075);
+
+        casaOlindo[0] = new Vector2(1890918, -9922486);
+        casaOlindo[1] = new Vector2(1890906, -9922367);
+        casaOlindo[2] = new Vector2(1890668, -9922388);
+        casaOlindo[3] = new Vector2(1890694, -9922516);
+
+        etnobotanicoOaxaca[0] = new Vector2(1706754, -9672334);
+        etnobotanicoOaxaca[1] = new Vector2(1706723, -9672155);
+        etnobotanicoOaxaca[2] = new Vector2(1706551, -9672195);
+        etnobotanicoOaxaca[3] = new Vector2(1706690, -9672345);
+
+        etnobotanicoFPelaez[0]= new Vector2(1904270, -9830156);
+        etnobotanicoFPelaez[1]= new Vector2(1904299, -9830136);
+        etnobotanicoFPelaez[2]= new Vector2(1904233, -9830027);
+        etnobotanicoFPelaez[3]= new Vector2(1904203, -9830048);
+
+        heliaBravo[0] = new Vector2(1833391, -9745968);
+        heliaBravo[1] = new Vector2(1833007, -9745912);
+        heliaBravo[2] = new Vector2(1833047, -9745549);
+        heliaBravo[3] = new Vector2(1833413, -9745841);
+
+        regionalCadereyta[0] = new Vector2(2068858, -9980699);
+        regionalCadereyta[1] = new Vector2(2068634, -9980529);
+        regionalCadereyta[2] = new Vector2(2068453, -9980336);
+        regionalCadereyta[3] = new Vector2(2068665, -9980321);
+
+        drAlfredoBarrera[0] = new Vector2(2084882, -8690138);
+        drAlfredoBarrera[1] = new Vector2(2084841, -8689816);
+        drAlfredoBarrera[2] = new Vector2(2084030, -8690344);
+        drAlfredoBarrera[3] = new Vector2(2083786, -8690972);
+
+        bFJohnston[0] = new Vector2(2579180, -10900491);
+        bFJohnston[1] = new Vector2(2578871, -10900139);
+        bFJohnston[2] = new Vector2(2578637, -10900638);
+        bFJohnston[3] = new Vector2(2578741, -10900814);
+
+        arquoBotanicoAnikabil[0] = new Vector2(2099108, -8969039);
+        arquoBotanicoAnikabil[1] = new Vector2(2098885, -8968232);
+        arquoBotanicoAnikabil[2] = new Vector2(2098626, -8968402);
+        arquoBotanicoAnikabil[3] = new Vector2(2098856, -8968905);
+
+        acancehYxkaansajil[0] = new Vector2(2082306, -8947191);
+        acancehYxkaansajil[1] = new Vector2(2082299, -8946912);
+        acancehYxkaansajil[2] = new Vector2(2082023, -8947004);
+        acancehYxkaansajil[3] = new Vector2(2082050, -8947121);
+
+        tizatlan[0] = new Vector2(1933036, -9821996);
+        tizatlan[1] = new Vector2(1932893, -9821769);
+        tizatlan[2] = new Vector2(1933099, -9821468);
+        tizatlan[3] = new Vector2(1933260, -9821376);
+
+        uaTx[0] = new Vector2(1930253, -9824345);
+        uaTx[1] = new Vector2(1930170, -9824522);
+        uaTx[2] = new Vector2(1930018, -9824346);
+        uaTx[3] = new Vector2(1930150, -9824278);
+
+        uaG[0] = new Vector2(2069250, -10341919);
+        uaG[1] = new Vector2(2069130, -10341933);
+        uaG[2] = new Vector2(2069015, -10341740);
+        uaG[3] = new Vector2(2069186, -10341631);
+
+        reyNetzahualcoyotlUAA[0] = new Vector2(2191318, -10232076);
+        reyNetzahualcoyotlUAA[1] = new Vector2(2191122, -10232053);
+        reyNetzahualcoyotlUAA[2] = new Vector2(2191163, -10231822);
+        reyNetzahualcoyotlUAA[3] = new Vector2(2191217, -10231840);
+
+        regiolanRogerOrellana[0] = new Vector2(2102984, -8963857);
+        regiolanRogerOrellana[1] = new Vector2(2102985, -8963968);
+        regiolanRogerOrellana[2] = new Vector2(2102819, -8963990);
+        regiolanRogerOrellana[3] = new Vector2(2102811, -8963871);
+
+        cosmovitral[0] = new Vector2(1929380, -9965442);
+        cosmovitral[1] = new Vector2(1929384, -9965308);
+        cosmovitral[2] = new Vector2(1929331, -9965303);
+        cosmovitral[3] = new Vector2(1929329, -9965441);
+
+        ilamGardens[0] = new Vector2(-4352038, 17257317);//Nueva Zelanda
+        ilamGardens[1] = new Vector2(-4352136, 17257930);
+        ilamGardens[2] = new Vector2(-4352481, 17257915);
+        ilamGardens[3] = new Vector2(-4352520, 17257340);
+
+        //Pruebas;
+
+        casa[0] = new Vector2(1900503, -9819772);
+        casa[1] = new Vector2(1900538, -9819771);
+        casa[2] = new Vector2(1900528, -9819742);
+        casa[3] = new Vector2(1900478, -9819750);
+
+    }
+
+
+
+    private void Start()
+    {
+        StartCoroutine(Location());
+    }
+
+
+
+    private void Update()
+    {
+
+        Vector2 myLocation = new Vector2(Input.location.lastData.latitude * 100000, Input.location.lastData.longitude * 100000);
+
+        textLocation.text = "Mi ubicacion: " + myLocation;
+
+        //float distance = Vector2.Distance(rectoria[0], myLocation);
+
+        //textDistance.text = "Destino: " + rectoria[0] + "Distancia: " + distance+" mts";
+
+
+        if (PointInPolygon(myLocation.x, myLocation.y))
+        {
+            textFlag.text = "Genoma";
+
+            flecha.GetComponent<Animator>().enabled = true;
+
+            timer += Time.deltaTime;
+
+            textDistance.text = (int)timer + " segundos";
+
+            if (!audios.GetComponents<AudioSource>()[0].isPlaying)
+                audios.GetComponents<AudioSource>()[0].Play();
+
+            if (timer > 180)
+            {
+                if(!audios.GetComponents<AudioSource>()[1].isPlaying)     
+                    audios.GetComponents<AudioSource>()[1].Play();
+                textFlag.text = "Germinación";
+            }
+
+            if (timer > 360) 
+            {
+                if (!audios.GetComponents<AudioSource>()[2].isPlaying)
+                    audios.GetComponents<AudioSource>()[2].Play();
+                textFlag.text = "Etapa vegetativa";
+            }
+
+            if (timer > 540) 
+            {
+                if (!audios.GetComponents<AudioSource>()[3].isPlaying)
+                    audios.GetComponents<AudioSource>()[3].Play();
+                textFlag.text = "Crecimiento";
+            }
+
+            if (timer > 720)
+            {
+                if (!audios.GetComponents<AudioSource>()[4].isPlaying)
+                    audios.GetComponents<AudioSource>()[4].Play();
+                textFlag.text = "Transición floral";
+            }
+
+            if (timer > 900)
+            {
+                if (!audios.GetComponents<AudioSource>()[5].isPlaying)
+                    audios.GetComponents<AudioSource>()[5].Play();
+                textFlag.text = "Floración";
+            }
+
+            if (timer > 1080)
+            {
+                if (!audios.GetComponents<AudioSource>()[6].isPlaying)
+                    audios.GetComponents<AudioSource>()[6].Play();
+
+                textFlag.text = "Gametogénesis";
+            }
+
+            if (timer > 1260)
+            {
+                if (!audios.GetComponents<AudioSource>()[7].isPlaying)
+                    audios.GetComponents<AudioSource>()[7].Play();
+                textFlag.text = "Fructificación";
+            }
+
+            if (timer >1449) 
+            {
+                //graciasPorEscuchar.SetActive(true);
+                textFlag.text = "Gracias por escuchar";
+
+                audios.GetComponents<AudioSource>()[0].volume -= Time.deltaTime;
+                audios.GetComponents<AudioSource>()[1].volume -= Time.deltaTime;
+                audios.GetComponents<AudioSource>()[2].volume -= Time.deltaTime;
+                audios.GetComponents<AudioSource>()[3].volume -= Time.deltaTime;
+                audios.GetComponents<AudioSource>()[4].volume -= Time.deltaTime;
+                audios.GetComponents<AudioSource>()[5].volume -= Time.deltaTime;
+                audios.GetComponents<AudioSource>()[6].volume -= Time.deltaTime;
+                audios.GetComponents<AudioSource>()[7].volume -= Time.deltaTime;
+            }
+        }
+        else
+        {
+            audios.GetComponents<AudioSource>()[0].Stop();
+            audios.GetComponents<AudioSource>()[1].Stop();
+            audios.GetComponents<AudioSource>()[2].Stop();
+            audios.GetComponents<AudioSource>()[3].Stop();
+            audios.GetComponents<AudioSource>()[4].Stop();
+            audios.GetComponents<AudioSource>()[5].Stop();
+            audios.GetComponents<AudioSource>()[6].Stop();
+            audios.GetComponents<AudioSource>()[7].Stop();
+
+            flecha.GetComponent<Animator>().enabled = false;
+                        }
+    }
+
+    
+
+    IEnumerator Location()
+    {
+        Debug.Log("location");
+        // First, check if user has location service enabled
+        if (!Input.location.isEnabledByUser)
+            yield break;
+
+        // Start service before querying location
+        Input.location.Start(0.1f, 0.1f);
+
+        // Wait until service initializes
+        int maxWait = 20;
+        while (Input.location.status == LocationServiceStatus.Initializing && maxWait > 0)
+        {
+            yield return new WaitForSeconds(1);
+            maxWait--;
+        }
+
+        // Service didn't initialize in 20 seconds
+        if (maxWait < 1)
+        {
+            Debug.Log("Timed out");
+            yield break;
+        }
+
+        // Connection has failed
+        if (Input.location.status == LocationServiceStatus.Failed)
+        {
+            Debug.Log("Unable to determine device location");
+            yield break;
+        }
+    }
+
+    //  Globals which should be set before calling this function:
+    //
+    //  int    polyCorners  =  how many corners the polygon has
+    //  float  polyX[]      =  horizontal coordinates of corners
+    //  float  polyY[]      =  vertical coordinates of corners
+    //  float  x, y         =  point to be tested
+    //
+    //  (Globals are used in this example for purposes of speed.  Change as
+    //  desired.)
+    //
+    //  The function will return YES if the point x,y is inside the polygon, or
+    //  NO if it is not.  If the point is exactly on the edge of the polygon,
+    //  then the function may return YES or NO.
+    //
+    //  Note that division by zero is avoided because the division is protected
+    //  by the "if" clause which surrounds it.
+
+    bool PointInPolygon(float x, float y)
+    {
+
+        int i;
+        int polyCorners = 4;
+        int j = polyCorners-1;
+
+        bool oddNodes = false; 
+        //++++++++++++++++++++++++++++++++++++++++
+        i=0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((buap[i].y < y && buap[j].y >= y || buap[j].y < y && buap[i].y >= y) && (buap[i].x <= x || buap[j].x <= x))
+            {
+                oddNodes ^= (buap[i].x + (y - buap[i].y) / (buap[j].y - buap[i].y) * (buap[j].x - buap[i].x) < x);
+            }
+            j = i;
+        }
+        //++++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((uNACAR[i].y < y && uNACAR[j].y >= y || uNACAR[j].y < y && uNACAR[i].y >= y) && (uNACAR[i].x <= x || uNACAR[j].x <= x))
+            {
+                oddNodes ^= (uNACAR[i].x + (y - uNACAR[i].y) / (uNACAR[j].y - uNACAR[i].y) * (uNACAR[j].x - uNACAR[i].x) < x);
+            }
+            j = i;
+        }
+        //+++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((drFaustinoMiranda[i].y < y && drFaustinoMiranda[j].y >= y || drFaustinoMiranda[j].y < y && drFaustinoMiranda[i].y >= y) && (drFaustinoMiranda[i].x <= x || drFaustinoMiranda[j].x <= x))
+            {
+                oddNodes ^= (drFaustinoMiranda[i].x + (y - drFaustinoMiranda[i].y) / (drFaustinoMiranda[j].y - drFaustinoMiranda[i].y) * (drFaustinoMiranda[j].x - drFaustinoMiranda[i].x) < x);
+            }
+            j = i;
+        }
+        //++++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((uAGro[i].y < y && uAGro[j].y >= y || uAGro[j].y < y && uAGro[i].y >= y) && (uAGro[i].x <= x || uAGro[j].x <= x))
+            {
+                oddNodes ^= (uAGro[i].x + (y - uAGro[i].y) / (uAGro[j].y - uAGro[i].y) * (uAGro[j].x - uAGro[i].x) < x);
+            }
+            j = i;
+        }
+        //++++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((jbVallarta[i].y < y && jbVallarta[j].y >= y || jbVallarta[j].y < y && jbVallarta[i].y >= y) && (jbVallarta[i].x <= x || jbVallarta[j].x <= x))
+            {
+                oddNodes ^= (jbVallarta[i].x + (y - jbVallarta[i].y) / (jbVallarta[j].y - jbVallarta[i].y) * (jbVallarta[j].x - jbVallarta[i].x) < x);
+            }
+            j = i;
+        }
+        //++++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((ibUNAM[i].y < y && ibUNAM[j].y >= y || ibUNAM[j].y < y && ibUNAM[i].y >= y) && (ibUNAM[i].x <= x || ibUNAM[j].x <= x))
+            {
+                oddNodes ^= (ibUNAM[i].x + (y - ibUNAM[i].y) / (ibUNAM[j].y - ibUNAM[i].y) * (ibUNAM[j].x - ibUNAM[i].x) < x);
+            }
+            j = i;
+        }
+        //+++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((jbChapultepec[i].y < y && jbChapultepec[j].y >= y || jbChapultepec[j].y < y && jbChapultepec[i].y >= y) && (jbChapultepec[i].x <= x || jbChapultepec[j].x <= x))
+            {
+                oddNodes ^= (jbChapultepec[i].x + (y - jbChapultepec[i].y) / (jbChapultepec[j].y - jbChapultepec[i].y) * (jbChapultepec[j].x - jbChapultepec[i].x) < x);
+            }
+            j = i;
+        }
+        //+++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((casaOlindo[i].y < y && casaOlindo[j].y >= y || casaOlindo[j].y < y && casaOlindo[i].y >= y) && (casaOlindo[i].x <= x || casaOlindo[j].x <= x))
+            {
+                oddNodes ^= (casaOlindo[i].x + (y - casaOlindo[i].y) / (casaOlindo[j].y - casaOlindo[i].y) * (casaOlindo[j].x - casaOlindo[i].x) < x);
+            }
+            j = i;
+        }
+        //+++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((etnobotanicoOaxaca[i].y < y && etnobotanicoOaxaca[j].y >= y || etnobotanicoOaxaca[j].y < y && etnobotanicoOaxaca[i].y >= y) && (etnobotanicoOaxaca[i].x <= x || etnobotanicoOaxaca[j].x <= x))
+            {
+                oddNodes ^= (etnobotanicoOaxaca[i].x + (y - etnobotanicoOaxaca[i].y) / (etnobotanicoOaxaca[j].y - etnobotanicoOaxaca[i].y) * (etnobotanicoOaxaca[j].x - etnobotanicoOaxaca[i].x) < x);
+            }
+            j = i;
+        }
+        //+++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((etnobotanicoFPelaez[i].y < y && etnobotanicoFPelaez[j].y >= y || etnobotanicoFPelaez[j].y < y && etnobotanicoFPelaez[i].y >= y) && (etnobotanicoFPelaez[i].x <= x || etnobotanicoFPelaez[j].x <= x))
+            {
+                oddNodes ^= (etnobotanicoFPelaez[i].x + (y - etnobotanicoFPelaez[i].y) / (etnobotanicoFPelaez[j].y - etnobotanicoFPelaez[i].y) * (etnobotanicoFPelaez[j].x - etnobotanicoFPelaez[i].x) < x);
+            }
+            j = i;
+        }
+        //+++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((heliaBravo[i].y < y && heliaBravo[j].y >= y || heliaBravo[j].y < y && heliaBravo[i].y >= y) && (heliaBravo[i].x <= x || heliaBravo[j].x <= x))
+            {
+                oddNodes ^= (heliaBravo[i].x + (y - heliaBravo[i].y) / (heliaBravo[j].y - heliaBravo[i].y) * (heliaBravo[j].x - heliaBravo[i].x) < x);
+            }
+            j = i;
+        }
+        //+++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((regionalCadereyta[i].y < y && regionalCadereyta[j].y >= y || regionalCadereyta[j].y < y && regionalCadereyta[i].y >= y) && (regionalCadereyta[i].x <= x || regionalCadereyta[j].x <= x))
+            {
+                oddNodes ^= (regionalCadereyta[i].x + (y - regionalCadereyta[i].y) / (regionalCadereyta[j].y - regionalCadereyta[i].y) * (regionalCadereyta[j].x - regionalCadereyta[i].x) < x);
+            }
+            j = i;
+        }
+        //+++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((drAlfredoBarrera[i].y < y && drAlfredoBarrera[j].y >= y || drAlfredoBarrera[j].y < y && drAlfredoBarrera[i].y >= y) && (drAlfredoBarrera[i].x <= x || drAlfredoBarrera[j].x <= x))
+            {
+                oddNodes ^= (drAlfredoBarrera[i].x + (y - drAlfredoBarrera[i].y) / (drAlfredoBarrera[j].y - drAlfredoBarrera[i].y) * (drAlfredoBarrera[j].x - drAlfredoBarrera[i].x) < x);
+            }
+            j = i;
+        }
+        //+++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((bFJohnston[i].y < y && bFJohnston[j].y >= y || bFJohnston[j].y < y && bFJohnston[i].y >= y) && (bFJohnston[i].x <= x || bFJohnston[j].x <= x))
+            {
+                oddNodes ^= (bFJohnston[i].x + (y - bFJohnston[i].y) / (bFJohnston[j].y - bFJohnston[i].y) * (bFJohnston[j].x - bFJohnston[i].x) < x);
+            }
+            j = i;
+        }
+        //+++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((arquoBotanicoAnikabil[i].y < y && arquoBotanicoAnikabil[j].y >= y || arquoBotanicoAnikabil[j].y < y && arquoBotanicoAnikabil[i].y >= y) && (arquoBotanicoAnikabil[i].x <= x || arquoBotanicoAnikabil[j].x <= x))
+            {
+                oddNodes ^= (arquoBotanicoAnikabil[i].x + (y - arquoBotanicoAnikabil[i].y) / (arquoBotanicoAnikabil[j].y - arquoBotanicoAnikabil[i].y) * (arquoBotanicoAnikabil[j].x - arquoBotanicoAnikabil[i].x) < x);
+            }
+            j = i;
+        }
+        //+++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((acancehYxkaansajil[i].y < y && acancehYxkaansajil[j].y >= y || acancehYxkaansajil[j].y < y && acancehYxkaansajil[i].y >= y) && (acancehYxkaansajil[i].x <= x || acancehYxkaansajil[j].x <= x))
+            {
+                oddNodes ^= (acancehYxkaansajil[i].x + (y - acancehYxkaansajil[i].y) / (acancehYxkaansajil[j].y - acancehYxkaansajil[i].y) * (acancehYxkaansajil[j].x - acancehYxkaansajil[i].x) < x);
+            }
+            j = i;
+        }
+        //+++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((tizatlan[i].y < y && tizatlan[j].y >= y || tizatlan[j].y < y && tizatlan[i].y >= y) && (tizatlan[i].x <= x || tizatlan[j].x <= x))
+            {
+                oddNodes ^= (tizatlan[i].x + (y - tizatlan[i].y) / (tizatlan[j].y - tizatlan[i].y) * (tizatlan[j].x - tizatlan[i].x) < x);
+            }
+            j = i;
+        }
+        //+++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((uaTx[i].y < y && uaTx[j].y >= y || uaTx[j].y < y && uaTx[i].y >= y) && (uaTx[i].x <= x || uaTx[j].x <= x))
+            {
+                oddNodes ^= (uaTx[i].x + (y - uaTx[i].y) / (uaTx[j].y - uaTx[i].y) * (uaTx[j].x - uaTx[i].x) < x);
+            }
+            j = i;
+        }
+        //+++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((uaG[i].y < y && uaG[j].y >= y || uaG[j].y < y && uaG[i].y >= y) && (uaG[i].x <= x || uaG[j].x <= x))
+            {
+                oddNodes ^= (uaG[i].x + (y - uaG[i].y) / (uaG[j].y - uaG[i].y) * (uaG[j].x - uaG[i].x) < x);
+            }
+            j = i;
+        }
+        //+++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((reyNetzahualcoyotlUAA[i].y < y && reyNetzahualcoyotlUAA[j].y >= y || reyNetzahualcoyotlUAA[j].y < y && reyNetzahualcoyotlUAA[i].y >= y) && (reyNetzahualcoyotlUAA[i].x <= x || reyNetzahualcoyotlUAA[j].x <= x))
+            {
+                oddNodes ^= (reyNetzahualcoyotlUAA[i].x + (y - reyNetzahualcoyotlUAA[i].y) / (reyNetzahualcoyotlUAA[j].y - reyNetzahualcoyotlUAA[i].y) * (reyNetzahualcoyotlUAA[j].x - reyNetzahualcoyotlUAA[i].x) < x);
+            }
+            j = i;
+        }
+        //++++++++++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((cosmovitral[i].y < y && cosmovitral[j].y >= y || cosmovitral[j].y < y && cosmovitral[i].y >= y) && (cosmovitral[i].x <= x || cosmovitral[j].x <= x))
+            {
+                oddNodes ^= (cosmovitral[i].x + (y - cosmovitral[i].y) / (cosmovitral[j].y - cosmovitral[i].y) * (cosmovitral[j].x - cosmovitral[i].x) < x);
+            }
+            j = i;
+        }
+        //+++++++++++++++++++++++++++++++++
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((ilamGardens[i].y < y && ilamGardens[j].y >= y || ilamGardens[j].y < y && ilamGardens[i].y >= y) && (ilamGardens[i].x <= x || ilamGardens[j].x <= x))
+            {
+                oddNodes ^= (ilamGardens[i].x + (y - ilamGardens[i].y) / (ilamGardens[j].y - ilamGardens[i].y) * (ilamGardens[j].x - ilamGardens[i].x) < x);
+            }
+            j = i;
+        }
+
+
+        //+++++++++++++++++++++++Pruebas
+
+        i = 0;
+        polyCorners = 4;
+        j = polyCorners - 1;
+
+        for (i = 0; i < polyCorners; i++)
+        {
+            if ((casa[i].y < y && casa[j].y >= y || casa[j].y < y && casa[i].y >= y) && (casa[i].x <= x || casa[j].x <= x))
+            {
+                oddNodes ^= (casa[i].x + (y - casa[i].y) / (casa[j].y - casa[i].y) * (casa[j].x - casa[i].x) < x);
+            }
+            j = i;
+        }
+
+
+        return oddNodes;
+    }
+
+
+    public void clickButtonBack()
+    {
+        gameObject.SetActive(false);
+    }
+}
