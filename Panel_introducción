@@ -1,0 +1,25 @@
+using System.Collections;
+using UnityEngine;
+
+public class PanelIntroduccion : MonoBehaviour {
+
+    [SerializeField]//comando
+    private GameObject panelInstrucciones;//declaracion de variable
+
+    	// Inicialización
+	void Start () {
+        StartCoroutine(Intro());
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+    }
+	
+	// Actualización llamada cada frame
+	void Update () {
+		
+	}
+
+    IEnumerator Intro() 
+    {
+        yield return new WaitForSeconds(3); //espera tres segundos antes de llamar la otra ventana
+        panelInstrucciones.SetActive(true);
+      }
+}
