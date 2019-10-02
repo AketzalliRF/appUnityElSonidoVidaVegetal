@@ -1,0 +1,20 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PanelLosGenes : MonoBehaviour {
+
+	// Inicialización
+	void Start () {
+		
+	}
+
+    // Actualización llamada cada frame
+    void Update () {
+		
+	}
+    public void clickButtonBack()
+    {
+        gameObject.SetActive(false);
+    }
+}
